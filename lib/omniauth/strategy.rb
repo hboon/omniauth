@@ -266,7 +266,7 @@ module OmniAuth
           p "xxx Omniauth request-call() here 4"
           env['rack.session']['omniauth.origin'] = request.params[options.origin_param]
         elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
-          p "xxx Omniauth request-call() here 5"
+          p "xxx Omniauth request-call() here 5 HTTP_REFERER: #{env['HTTP_REFERER']} request_path: #{request_path}"
           env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
         end
 
