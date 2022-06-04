@@ -240,6 +240,7 @@ module OmniAuth
 
     # Performs the steps necessary to run the request phase of a strategy.
     def request_call # rubocop:disable CyclomaticComplexity, MethodLength, PerceivedComplexity
+      p "xxx Omniauth calling request-call()"
       setup_phase
       log :debug, 'Request phase initiated.'
 
@@ -250,23 +251,30 @@ module OmniAuth
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
 
       if options.form.respond_to?(:call)
+        p "xxx Omniauth request-call() here 1"
         log :debug, 'Rendering form from supplied Rack endpoint.'
         options.form.call(env)
       elsif options.form
+        p "xxx Omniauth request-call() here 2"
         log :debug, 'Rendering form from underlying application.'
         call_app!
       elsif !options.origin_param
+        p "xxx Omniauth request-call() here 3"
         request_phase
       else
         if request.params[options.origin_param]
+          p "xxx Omniauth request-call() here 4"
           env['rack.session']['omniauth.origin'] = request.params[options.origin_param]
         elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
+          p "xxx Omniauth request-call() here 5"
           env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
         end
 
+        p "xxx Omniauth request-call() here 6"
         request_phase
       end
     rescue OmniAuth::AuthenticityError => e
+      p "xxx Omniauth request-call() error: #{e}"
       fail!(:authenticity_error, e)
     end
 
