@@ -175,8 +175,10 @@ module OmniAuth
     #
     # @param env [Hash] The Rack environment.
     def call!(env) # rubocop:disable CyclomaticComplexity, PerceivedComplexity
+      p "xxx Omniauth calling call!()"
       unless env['rack.session']
         error = OmniAuth::NoSessionError.new('You must provide a session to use OmniAuth.')
+        p "xxx Omniauth call!() error: #{error}"
         raise(error)
       end
 
@@ -186,19 +188,26 @@ module OmniAuth
 
       @env['omniauth.strategy'] = self if on_auth_path?
 
+      p "xxx Omniauth call!() test_mode?: #{OmniAuth.config.test_mode}"
       return mock_call!(env) if OmniAuth.config.test_mode
 
       begin
+        p "xxx Omniauth call!() here 1"
         return options_call if on_auth_path? && options_request?
+        p "xxx Omniauth call!() here 2"
         return request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
+        p "xxx Omniauth call!() here 3"
         return callback_call if on_callback_path?
+        p "xxx Omniauth call!() here 4"
         return other_phase if respond_to?(:other_phase)
       rescue StandardError => e
+        p "xxx Omniauth call!() error: #{e}"
         raise e if env.delete('omniauth.error.app')
 
         return fail!(e.message, e)
       end
 
+      p "xxx Omniauth call!() before @app.call"
       @app.call(env)
     end
 
