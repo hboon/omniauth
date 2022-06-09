@@ -178,7 +178,7 @@ module OmniAuth
       p "xxx Omniauth calling call!()"
       unless env['rack.session']
         error = OmniAuth::NoSessionError.new('You must provide a session to use OmniAuth.')
-        p "xxx Omniauth call!() error: #{error}"
+        p "xxx Omniauth call!() error1: #{error}"
         raise(error)
       end
 
@@ -201,7 +201,7 @@ module OmniAuth
         p "xxx Omniauth call!() here 4"
         return other_phase if respond_to?(:other_phase)
       rescue StandardError => e
-        p "xxx Omniauth call!() error: #{e}"
+        p "xxx Omniauth call!() error2: #{e}"
         raise e if env.delete('omniauth.error.app')
 
         return fail!(e.message, e)
